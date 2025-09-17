@@ -44,7 +44,6 @@ const blogs = [
 
 
 const Blog = () => {
-  let index=0;
   return (
     <div className="min-h-screen bg-white dark:bg-gradient-to-b dark:from-black dark:to-blue-950 text-gray-900 dark:text-gray-100 transition-colors duration-500">
       {/* Header Section */}

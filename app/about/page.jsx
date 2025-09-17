@@ -83,7 +83,7 @@ function About() {
           >
             <div className="md:w-1/2">
               <Image
-                src="/strt.jfif"
+                src="/strt.png"
                 alt="The Spark"
                 width={500}
                 height={350}
@@ -112,7 +112,7 @@ function About() {
           >
             <div className="md:w-1/2">
               <Image
-                src="/deep.jfif"
+                src="/deep.png"
                 alt="Learning"
                 width={500}
                 height={350}
@@ -141,7 +141,7 @@ function About() {
           >
             <div className="md:w-1/2">
               <Image
-                src="/chal.jfif"
+                src="/chal.png"
                 alt="Projects"
                 width={500}
                 height={350}
