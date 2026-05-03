@@ -2,199 +2,245 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
-import Typed from "typed.js";
-import { motion } from "framer-motion";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
-function About() {
-  const typedRef = useRef(null);
+const timeline = [
+  {
+    year: "2022",
+    title: "The Spark",
+    body: "Started with Python in high school. Wrote my first script, got hooked, and spent evenings building small automations and learning the fundamentals.",
+    image: "/strt.png",
+    alt: "Beginning to code",
+  },
+  {
+    year: "2023",
+    title: "Going Deeper",
+    body: "Explored data structures, algorithms, and web development. Completed online courses and took on my first freelance projects — grew from beginner to confident developer.",
+    image: "/deep.png",
+    alt: "Learning deeper concepts",
+  },
+  {
+    year: "2024",
+    title: "Taking on Challenges",
+    body: "Contributed to open-source, built full-stack applications, and started mastering the React & Next.js ecosystem. Every project pushed my limits.",
+    image: "/chal.png",
+    alt: "Taking on challenges",
+  },
+];
+
+const skills = [
+  { label: "Languages", items: "TypeScript · JavaScript · Python" },
+  { label: "Frontend", items: "React · Next.js · Tailwind CSS" },
+  { label: "Backend", items: "Node.js · REST APIs · PostgreSQL" },
+  { label: "Tools", items: "Git · Docker · Vercel · Figma" },
+];
+
+export default function About() {
+  const pageRef = useRef(null);
 
   useEffect(() => {
-    // ensure span is mounted
-    if (!typedRef.current) return;
+    let ctx;
 
-    const typed = new Typed(typedRef.current, {
-      strings: [
-        "Software Developer 💻",
-        "Tech Enthusiast 🚀",
-        "Lifelong Learner 📚",
-      ],
-      typeSpeed: 60,
-      backSpeed: 40,
-      backDelay: 1500,
-      loop: true,
-    });
+    (async () => {
+      const { gsap } = await import("gsap");
+      const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+      gsap.registerPlugin(ScrollTrigger);
 
-    // cleanup to prevent memory leaks
-    return () => {
-      typed.destroy();
-    };
+      ctx = gsap.context(() => {
+        /* Hero entrance */
+        gsap.fromTo(
+          ".g-hero-item",
+          { opacity: 0, y: 28 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease: "power3.out",
+            stagger: 0.12,
+            delay: 0.1,
+          }
+        );
+
+        /* Timeline items */
+        gsap.utils.toArray(".g-timeline-item").forEach((el) => {
+          gsap.fromTo(
+            el,
+            { opacity: 0, y: 40 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: el,
+                start: "top 85%",
+                toggleActions: "play none none none",
+              },
+            }
+          );
+        });
+
+        /* Skills grid */
+        gsap.utils.toArray(".g-skill-card").forEach((el, i) => {
+          gsap.fromTo(
+            el,
+            { opacity: 0, y: 20 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              ease: "power2.out",
+              delay: i * 0.07,
+              scrollTrigger: {
+                trigger: el,
+                start: "top 88%",
+                toggleActions: "play none none none",
+              },
+            }
+          );
+        });
+      }, pageRef);
+    })();
+
+    return () => ctx?.revert();
   }, []);
 
   return (
-    <div className="bg-gradient-to-b from-white via-gray-100 to-blue-50 text-black dark:from-black dark:via-gray-900 dark:to-blue-900 dark:text-white transition-colors duration-500">
-      {/* Hero Section */}
-      <motion.section
-        initial={{ opacity: 0, y: 80 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-        className="flex flex-col items-center justify-center text-center py-24 md:py-32 px-4 sm:px-6"
-      >
-        {/* Profile Image */}
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.2 }}
-          className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-52 md:h-52 mb-6 rounded-full overflow-hidden border-4 border-blue-500 shadow-lg shadow-blue-600/50"
-        >
-          <Image src="/e1.png" alt="Profile" fill className="object-cover" />
-        </motion.div>
-
-        {/* Heading */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3">
-          Hi, I'm Adil Umer 👋
-        </h1>
-
-        {/* Typewriter effect */}
-        <span
-          ref={typedRef}
-          className="text-lg sm:text-xl md:text-2xl font-semibold text-blue-500 dark:text-blue-400 block h-8"
-        />
-
-        <p className="mt-6 max-w-2xl text-gray-600 dark:text-gray-300 px-4">
-          Passionate about building impactful applications, Full Stack Projects,
-          Providing Software as a Service with AI Integration.
-        </p>
-      </motion.section>
-
-      {/* Journey Timeline */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-20">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 md:mb-16">
-          My <span className="text-blue-500 dark:text-blue-400">Coding Journey</span>
-        </h2>
-
-        <div className="space-y-16 md:space-y-20">
-          {/* Step 1 */}
-          <motion.div
-            initial={{ opacity: 0, x: -80 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="flex flex-col md:flex-row items-center gap-6 md:gap-10"
-          >
-            <div className="md:w-1/2">
+    <div
+      ref={pageRef}
+      className="bg-white dark:bg-[#09090b] text-zinc-900 dark:text-zinc-50"
+    >
+      {/* ══ Hero ══ */}
+      <section className="pt-32 pb-20 px-6 sm:px-10 border-b border-zinc-100 dark:border-zinc-900">
+        <div className="container mx-auto max-w-5xl">
+          {/* Profile image */}
+          <div className="g-hero-item opacity-0 mb-10">
+            <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-zinc-200 dark:border-zinc-800 shadow-xl">
               <Image
-                src="/strt.png"
-                alt="The Spark"
-                width={500}
-                height={350}
-                className="rounded-xl shadow-lg shadow-blue-600/30"
+                src="/e1.png"
+                alt="Adil Umer"
+                width={80}
+                height={80}
+                className="object-cover w-full h-full"
               />
             </div>
-            <div className="md:w-1/2 text-center md:text-left">
-              <h3 className="text-xl sm:text-2xl font-semibold text-blue-500 dark:text-blue-400">
-                The Spark of Curiosity
-              </h3>
-              <p className="mt-4 text-gray-700 dark:text-gray-300">
-                My journey began in high school with Python. What started as
-                curiosity quickly grew into a passion as I spent nights building
-                small projects and learning the fundamentals of coding.
-              </p>
-            </div>
-          </motion.div>
+          </div>
 
-          {/* Step 2 */}
-          <motion.div
-            initial={{ opacity: 0, x: 80 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="flex flex-col md:flex-row-reverse items-center gap-6 md:gap-10"
-          >
-            <div className="md:w-1/2">
-              <Image
-                src="/deep.png"
-                alt="Learning"
-                width={500}
-                height={350}
-                className="rounded-xl shadow-lg shadow-blue-600/30"
-              />
-            </div>
-            <div className="md:w-1/2 text-center md:text-left">
-              <h3 className="text-xl sm:text-2xl font-semibold text-blue-500 dark:text-blue-400">
-                Diving Deeper
-              </h3>
-              <p className="mt-4 text-gray-700 dark:text-gray-300">
-                I started exploring advanced concepts — algorithms, data
-                structures, and web development. With online courses and
-                freelance projects, I grew from beginner to confident developer.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Step 3 */}
-          <motion.div
-            initial={{ opacity: 0, x: -80 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="flex flex-col md:flex-row items-center gap-6 md:gap-10"
-          >
-            <div className="md:w-1/2">
-              <Image
-                src="/chal.png"
-                alt="Projects"
-                width={500}
-                height={350}
-                className="rounded-xl shadow-lg shadow-blue-600/30"
-              />
-            </div>
-            <div className="md:w-1/2 text-center md:text-left">
-              <h3 className="text-xl sm:text-2xl font-semibold text-blue-500 dark:text-blue-400">
-                Taking on Challenges
-              </h3>
-              <p className="mt-4 text-gray-700 dark:text-gray-300">
-                From open-source contributions to full-stack apps, I embraced
-                challenges. Each project was an opportunity to level up and
-                grow as a developer.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Step 4 */}
-          <motion.div
-            initial={{ opacity: 0, x: 80 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="flex flex-col md:flex-row-reverse items-center gap-6 md:gap-10"
-          >
-          
-          </motion.div>
+          <p className="g-hero-item opacity-0 text-xs font-bold tracking-[0.2em] text-indigo-500 uppercase mb-4">
+            About Me
+          </p>
+          <h1 className="g-hero-item opacity-0 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-8">
+            Adil Umer
+          </h1>
+          <p className="g-hero-item opacity-0 text-zinc-500 dark:text-zinc-400 text-lg sm:text-xl max-w-2xl leading-relaxed mb-6">
+            Full Stack Software Engineer based in Islamabad, Pakistan. I build
+            fast, scalable web applications with React, Next.js, and TypeScript
+            — from idea to deployment.
+          </p>
+          <p className="g-hero-item opacity-0 text-zinc-500 dark:text-zinc-400 text-base max-w-2xl leading-relaxed">
+            Passionate about clean code, great developer experience, and
+            products that genuinely help people. I&apos;m currently open to
+            freelance projects and full-time opportunities.
+          </p>
         </div>
       </section>
 
-      {/* Call To Action */}
-      <motion.section
-        initial={{ opacity: 0, scale: 0.9 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-        className="py-16 md:py-20 text-center bg-gradient-to-r from-blue-700 via-blue-600 to-blue-800 dark:from-blue-900 dark:via-blue-800 dark:to-blue-900 transition-colors duration-500"
-      >
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 ">
-          Let’s Build Something Great Together 🚀
-        </h2>
-        <p className=" mb-6 max-w-xl mx-auto">
-          Have an idea or project in mind? Reach out and let’s collaborate.
-        </p>
-        <a
-          href="/contact"
-          className="px-5 py-3 bg-black dark:bg-gray-900 hover:bg-gray-800 text-blue-400 font-semibold rounded-lg shadow-md shadow-black/40 transition duration-300"
-        >
-          Contact Me
-        </a>
-      </motion.section>
+      {/* ══ Skills ══ */}
+      <section className="py-20 px-6 sm:px-10 border-b border-zinc-100 dark:border-zinc-900">
+        <div className="container mx-auto max-w-5xl">
+          <p className="text-xs font-bold tracking-[0.2em] text-indigo-500 uppercase mb-3 g-skill-card opacity-0">
+            Expertise
+          </p>
+          <h2 className="text-3xl font-extrabold mb-10 g-skill-card opacity-0">
+            Skills &amp; Stack
+          </h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {skills.map((s) => (
+              <div
+                key={s.label}
+                className="g-skill-card opacity-0 p-5 rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50"
+              >
+                <p className="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-3">
+                  {s.label}
+                </p>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                  {s.items}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ Timeline ══ */}
+      <section className="py-24 px-6 sm:px-10 border-b border-zinc-100 dark:border-zinc-900">
+        <div className="container mx-auto max-w-5xl">
+          <p className="text-xs font-bold tracking-[0.2em] text-indigo-500 uppercase mb-3">
+            My Story
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-extrabold mb-16">
+            Coding Journey
+          </h2>
+
+          <div className="space-y-20">
+            {timeline.map((step, i) => (
+              <div
+                key={step.year}
+                className={`g-timeline-item opacity-0 flex flex-col ${
+                  i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+                } gap-12 items-center`}
+              >
+                <div className="md:w-1/2">
+                  <Image
+                    src={step.image}
+                    alt={step.alt}
+                    width={520}
+                    height={340}
+                    className="rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-xl shadow-zinc-900/5 w-full"
+                  />
+                </div>
+                <div className="md:w-1/2">
+                  <span className="inline-block text-xs font-bold tracking-[0.2em] text-indigo-500 uppercase mb-3">
+                    {step.year}
+                  </span>
+                  <h3 className="text-2xl font-extrabold mb-4">{step.title}</h3>
+                  <p className="text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                    {step.body}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ CTA ══ */}
+      <section className="py-28 px-6 sm:px-10 text-center relative overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 60% 70% at 50% 50%, rgba(99,102,241,0.06) 0%, transparent 70%)",
+          }}
+        />
+        <div className="relative z-10 max-w-xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-extrabold mb-5">
+            Let&apos;s work together
+          </h2>
+          <p className="text-zinc-500 dark:text-zinc-400 mb-9 leading-relaxed">
+            Have a project in mind or want to chat? I&apos;m always happy to hear
+            from you.
+          </p>
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold shadow-xl shadow-indigo-600/25 transition-all duration-200"
+          >
+            Get in Touch <ArrowRight size={16} />
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }
-export default About;

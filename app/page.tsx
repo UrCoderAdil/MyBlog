@@ -1,205 +1,411 @@
 "use client";
 
+import React, { useEffect, useRef } from "react";
 import Link from "next/link";
-import React from "react";
-import Image from "next/image";
-import { motion } from "framer-motion";
-import { TypeAnimation } from "react-type-animation";
+import dynamic from "next/dynamic";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Layers,
+  Server,
+  Cpu,
+  CalendarDays,
+} from "lucide-react";
 
-const Page = () => {
+const HeroCanvas = dynamic(() => import("./components/HeroCanvas"), {
+  ssr: false,
+});
+
+/* ── Data ── */
+const services = [
+  {
+    icon: Layers,
+    title: "Frontend Engineering",
+    desc: "Pixel-perfect, responsive UIs built with React & Next.js. Performant, accessible, and delightful to use.",
+    tags: ["React", "Next.js", "Tailwind CSS", "Framer Motion"],
+  },
+  {
+    icon: Server,
+    title: "Backend & APIs",
+    desc: "Robust REST & GraphQL APIs with Node.js, Prisma, and PostgreSQL. Designed to scale.",
+    tags: ["Node.js", "PostgreSQL", "REST", "GraphQL"],
+  },
+  {
+    icon: Cpu,
+    title: "Full Stack Products",
+    desc: "End-to-end web applications — from auth and database to deployment. I own the whole stack.",
+    tags: ["Full Stack", "TypeScript", "Auth", "CI/CD"],
+  },
+];
+
+const stack = [
+  "TypeScript", "React", "Next.js", "Node.js",
+  "Tailwind CSS", "PostgreSQL", "Prisma", "Python",
+  "scikit-learn", "Pandas", "Matplotlib", "TensorFlow",
+  "Git", "Docker", "Vercel", "REST APIs",
+];
+
+const posts = [
+  {
+    path: "NeuralNetworks",
+    title: "What Are Neural Networks? A Visual Explanation",
+    date: "March 2025",
+    tag: "AI / ML",
+  },
+  {
+    path: "CNN",
+    title: "CNNs and Computer Vision: How Machines Learn to See",
+    date: "April 2025",
+    tag: "Computer Vision",
+  },
+  {
+    path: "RNN",
+    title: "RNNs and Language Processing: Teaching Machines to Read",
+    date: "May 2025",
+    tag: "NLP",
+  },
+  {
+    path: "Git",
+    title: "Why Every CS Student Should Learn Git Early",
+    date: "June 2025",
+    tag: "Dev Tools",
+  },
+];
+
+/* ── Hero headline words ── */
+const heroLine1 = ["Full", "Stack"];
+const heroLine2 = ["Software", "Engineer."];
+
+export default function Page() {
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let ctx: { revert: () => void } | null = null;
+
+    (async () => {
+      const { gsap } = await import("gsap");
+      const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+      gsap.registerPlugin(ScrollTrigger);
+
+      ctx = gsap.context(() => {
+        /* ── Hero entrance ── */
+        const tl = gsap.timeline({ defaults: { ease: "power3.out" }, delay: 0.15 });
+
+        tl.fromTo(
+          ".g-badge",
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.5 }
+        )
+          .fromTo(
+            ".g-word",
+            { opacity: 0, y: 40, skewY: 3 },
+            { opacity: 1, y: 0, skewY: 0, duration: 0.75, stagger: 0.07 },
+            "-=0.25"
+          )
+          .fromTo(
+            ".g-sub",
+            { opacity: 0, y: 16 },
+            { opacity: 1, y: 0, duration: 0.6 },
+            "-=0.4"
+          )
+          .fromTo(
+            ".g-cta",
+            { opacity: 0, y: 12 },
+            { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 },
+            "-=0.35"
+          );
+
+        /* ── Scroll reveals ── */
+        gsap.utils.toArray<HTMLElement>(".g-reveal").forEach((el, i) => {
+          gsap.fromTo(
+            el,
+            { opacity: 0, y: 36 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.7,
+              ease: "power2.out",
+              delay: (i % 3) * 0.08,
+              scrollTrigger: {
+                trigger: el,
+                start: "top 88%",
+                toggleActions: "play none none none",
+              },
+            }
+          );
+        });
+      }, heroRef);
+    })();
+
+    return () => ctx?.revert();
+  }, []);
+
   return (
-    <div className="bg-gradient-to-b from-white via-gray-100 to-blue-100 dark:from-black dark:via-gray-900 dark:to-blue-950">
-      {/* Hero Section */}
-      <section className="container px-4 py-20 mx-auto lg:flex lg:items-center lg:space-x-8">
-        {/* Left Text */}
-        <div className="w-full text-center lg:text-left lg:w-1/2">
-          <motion.h1
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="text-3xl md:text-5xl font-extrabold text-gray-900 dark:text-gray-100"
-          >
-            Hi, I’m <span className="text-blue-600">Adil</span> <br />
-            A Passionate <span className="underline decoration-blue-600">Software Engineer</span>
-          </motion.h1>
+    <div
+      ref={heroRef}
+      className="bg-white dark:bg-[#09090b] text-zinc-900 dark:text-zinc-50"
+    >
+      {/* ══════════════════════════════════════
+          HERO
+      ══════════════════════════════════════ */}
+      <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
+        {/* Three.js canvas */}
+        <HeroCanvas />
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 1 }}
-            className="mt-6 font-bold text-xs md:text-xl text-black dark:text-blue-500"
-          >
-            <h1 className="text-5xl"><TypeAnimation
-              sequence={[
-                "JavaScript Developer",
-                1500,
-                "TypeScript Wizard",
-                1500,
-                "React & Next.Js",
-                1500,
-                " Tailwind CSS UI Expert",
-                1500,
-                "Senior Python Engineer",
-                1500,
-                "Full Stack Engineer",
-                1500,
-                " MERN Stack Developer",
-                1500,
-              ]}
-              wrapper="span"
-              speed={50}
-              repeat={Infinity}
-            /></h1>
-          </motion.div>
+        {/* Radial vignette */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-[1]"
+          style={{
+            background:
+              "radial-gradient(ellipse 80% 60% at 50% 100%, transparent 60%, var(--background) 100%)",
+          }}
+        />
 
-          <p className="mt-6 text-gray-600 dark:text-gray-400">
-            Building modern, scalable, and stunning web apps with passion and precision.
-          </p>
-        </div>
+        <div className="relative z-[2] container mx-auto px-6 sm:px-10 pt-32 pb-28 max-w-5xl">
+          {/* Badge */}
+          <span className="g-badge opacity-0 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 text-xs font-semibold tracking-wide uppercase mb-8">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+            Available for work
+          </span>
 
-        {/* Right Image */}
-        <div className="w-full mt-10 lg:mt-0 lg:w-1/2">
-          <Image
-            src="https://www.creative-tim.com/twcomponents/svg/website-designer-bro-purple.svg"
-            alt="Software Engineer"
-            width={500}
-            height={500}
-            className="w-full h-full max-w-md mx-auto"
-          />
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section className="py-20">
-        <div className="text-center font-semibold">
-          <h1 className="text-5xl text-gray-900 dark:text-gray-100">
-            <span className="text-blue-600">Project </span> Pricing
+          {/* Headline */}
+          <h1 className="mb-8">
+            <div className="flex flex-wrap gap-x-4 gap-y-0">
+              {heroLine1.map((w) => (
+                <span
+                  key={w}
+                  className="g-word opacity-0 inline-block text-5xl sm:text-7xl lg:text-8xl font-extrabold tracking-tight text-zinc-300 dark:text-zinc-600"
+                >
+                  {w}
+                </span>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-x-4 gap-y-0 mt-1">
+              {heroLine2.map((w) => (
+                <span
+                  key={w}
+                  className="g-word opacity-0 inline-block text-5xl sm:text-7xl lg:text-8xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50"
+                >
+                  {w}
+                </span>
+              ))}
+            </div>
           </h1>
-          <p className="pt-6 text-lg md:text-xl text-gray-600 dark:text-gray-400 font-normal">
-            Transparent pricing for freelance projects. Pay per project type.
+
+          {/* Subline */}
+          <p className="g-sub opacity-0 text-zinc-500 dark:text-zinc-400 text-lg sm:text-xl max-w-xl leading-relaxed mb-10">
+            I&apos;m{" "}
+            <span className="text-zinc-800 dark:text-zinc-200 font-semibold">
+              Adil Umer
+            </span>
+            , a full stack engineer building fast, scalable web apps with
+            React, Next.js & TypeScript. Based in Islamabad, Pakistan.
           </p>
+
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link
+              href="/contact"
+              className="g-cta opacity-0 inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 hover:shadow-indigo-500/40 transition-all duration-200"
+            >
+              Hire Me <ArrowRight size={15} />
+            </Link>
+            <Link
+              href="/blog"
+              className="g-cta opacity-0 inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900 font-semibold text-sm transition-all duration-200"
+            >
+              Read My Blog
+            </Link>
+          </div>
         </div>
 
-        <div className="pt-16 flex flex-col md:flex-row gap-8 items-center justify-center">
-          {/* Frontend Project */}
-          <div className="w-96 p-8 bg-white dark:bg-gray-800 text-center rounded-3xl shadow-xl">
-            <h1 className="text-2xl font-semibold text-black dark:text-white">
-              Frontend Project
-            </h1>
-            <p className="pt-2 tracking-wide">
-              <span className="text-gray-400">$ </span>
-              <span className="text-3xl font-semibold">25</span>
-              <span className="text-gray-400"> / project</span>
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[2] flex flex-col items-center gap-2 text-zinc-400 dark:text-zinc-600 opacity-60">
+          <span className="text-xs font-medium tracking-widest uppercase">
+            Scroll
+          </span>
+          <div className="w-px h-12 bg-gradient-to-b from-zinc-400 dark:from-zinc-600 to-transparent" />
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════
+          SERVICES
+      ══════════════════════════════════════ */}
+      <section className="py-28 border-t border-zinc-100 dark:border-zinc-900">
+        <div className="container mx-auto px-6 sm:px-10 max-w-5xl">
+          <div className="g-reveal mb-14">
+            <p className="text-xs font-bold tracking-[0.2em] text-indigo-500 uppercase mb-3">
+              What I Build
             </p>
-            <hr className="mt-4 dark:border-gray-600" />
-            <div className="pt-8 space-y-4 text-left text-gray-600 dark:text-gray-400">
-              <p>✅ Responsive UI with Tailwind</p>
-              <p>✅ React Component Development</p>
-              <p>✅ Pixel Perfect Designs</p>
-            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-zinc-50">
+              Services
+            </h2>
           </div>
 
-          {/* Full Stack Project */}
-          <div className="w-80 p-8 bg-gray-900 text-center rounded-3xl text-white border-4 border-white shadow-xl relative transform scale-110">
-            <h1 className="text-2xl font-semibold">Full Stack (Next.js)</h1>
-            <p className="pt-2 tracking-wide">
-              <span className="text-gray-400">$ </span>
-              <span className="text-3xl font-semibold">41</span>
-              <span className="text-gray-400"> / project</span>
-            </p>
-            <hr className="mt-4 border-gray-600" />
-            <div className="pt-8 space-y-4 text-left text-gray-400">
-              <p>✅ Next.js + API Routes</p>
-              <p>✅ Database Integration</p>
-              <p>✅ Authentication & Security</p>
-            </div>
-            <div className="absolute top-4 right-4">
-              <p className="bg-blue-700 px-4 py-1 rounded-full uppercase text-xs font-bold">
-                Popular
-              </p>
-            </div>
-          </div>
-
-          {/* Enterprise Project */}
-          <div className="w-96 p-8 bg-white dark:bg-gray-800 text-center rounded-3xl shadow-xl">
-            <h1 className="text-2xl font-semibold text-black dark:text-white">
-              Enterprise Project
-            </h1>
-            <p className="pt-2 tracking-wide">
-              <span className="text-gray-400">$ </span>
-              <span className="text-3xl font-semibold">55</span>
-              <span className="text-gray-400"> / project</span>
-            </p>
-            <hr className="mt-4 dark:border-gray-600" />
-            <div className="pt-8 space-y-4 text-left text-gray-600 dark:text-gray-400">
-              <p>✅ Scalable Full Stack Apps</p>
-              <p>✅ Advanced Integrations</p>
-              <p>✅ Unlimited Cloud Deployment</p>
-            </div>
+          <div className="grid sm:grid-cols-3 gap-6">
+            {services.map((s) => {
+              const Icon = s.icon;
+              return (
+                <div
+                  key={s.title}
+                  className="g-reveal group p-7 rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 flex items-center justify-center mb-5 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/60 transition-colors">
+                    <Icon size={18} className="text-indigo-600 dark:text-indigo-400" />
+                  </div>
+                  <h3 className="text-base font-bold mb-3 text-zinc-900 dark:text-zinc-50">
+                    {s.title}
+                  </h3>
+                  <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-5">
+                    {s.desc}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {s.tags.map((t) => (
+                      <span
+                        key={t}
+                        className="px-2.5 py-1 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 text-xs font-medium"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Final Call to Action */}
-      <motion.section
-        initial={{ opacity: 0, y: 80 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-        viewport={{ once: true }}
-        className="relative w-full mt-32 rounded-3xl bg-gradient-to-b from-white via-gray-100 to-blue-100 dark:from-black dark:via-gray-900 dark:to-blue-950 px-6 py-20 md:py-28 text-center overflow-hidden"
-      >
-        {/* Glow Effects */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.2),transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.15),transparent_60%)]" />
+      {/* ══════════════════════════════════════
+          STACK
+      ══════════════════════════════════════ */}
+      <section className="py-20 border-t border-zinc-100 dark:border-zinc-900">
+        <div className="container mx-auto px-6 sm:px-10 max-w-5xl">
+          <div className="g-reveal mb-10">
+            <p className="text-xs font-bold tracking-[0.2em] text-indigo-500 uppercase mb-3">
+              Tech Stack
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-zinc-50">
+              Tools I Work With
+            </h2>
+          </div>
 
-        {/* Content */}
-        <motion.h2
-          initial={{ scale: 0.9, opacity: 0 }}
-          whileInView={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="relative z-10 text-4xl md:text-5xl font-extrabold mb-6"
-        >
-          Ready to <span className="text-blue-600">Level Up</span> Your Journey?
-        </motion.h2>
+          <div className="flex flex-wrap gap-3">
+            {stack.map((item) => (
+              <span
+                key={item}
+                className="g-reveal px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 text-sm font-medium hover:border-indigo-300 dark:hover:border-indigo-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all duration-200 cursor-default"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
-          className="relative z-10 max-w-2xl mx-auto text-lg md:text-xl text-gray-500 mb-10"
-        >
-          Let’s collaborate on your next big idea.  
-          From startup apps to enterprise platforms — I build with excellence.
-        </motion.p>
+      {/* ══════════════════════════════════════
+          WRITING
+      ══════════════════════════════════════ */}
+      <section className="py-28 border-t border-zinc-100 dark:border-zinc-900">
+        <div className="container mx-auto px-6 sm:px-10 max-w-5xl">
+          <div className="flex items-end justify-between mb-12 g-reveal">
+            <div>
+              <p className="text-xs font-bold tracking-[0.2em] text-indigo-500 uppercase mb-3">
+                Writing
+              </p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-zinc-50">
+                Latest Articles
+              </h2>
+            </div>
+            <Link
+              href="/blog"
+              className="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-500 hover:text-indigo-400 transition-colors"
+            >
+              All posts <ArrowRight size={14} />
+            </Link>
+          </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          className="relative z-10 flex flex-col sm:flex-row justify-center gap-4 "
-        >
+          <div className="divide-y divide-zinc-100 dark:divide-zinc-900">
+            {posts.map((post) => (
+              <Link
+                key={post.path}
+                href={`/blog/blogpost/${post.path}`}
+                className="g-reveal group flex items-center justify-between gap-6 py-5 hover:pl-2 transition-all duration-300"
+              >
+                <div className="flex items-center gap-4">
+                  <span className="hidden sm:block px-2.5 py-1 rounded-md bg-zinc-100 dark:bg-zinc-900 text-zinc-500 dark:text-zinc-500 text-xs font-medium">
+                    {post.tag}
+                  </span>
+                  <span className="font-semibold text-zinc-800 dark:text-zinc-200 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors">
+                    {post.title}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 flex-shrink-0">
+                  <span className="hidden sm:flex items-center gap-1.5 text-xs text-zinc-400 dark:text-zinc-600">
+                    <CalendarDays size={11} />
+                    {post.date}
+                  </span>
+                  <ArrowUpRight
+                    size={16}
+                    className="text-zinc-300 dark:text-zinc-700 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors"
+                  />
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <Link
+            href="/blog"
+            className="sm:hidden g-reveal inline-flex items-center gap-1.5 mt-8 text-sm font-semibold text-indigo-500 hover:text-indigo-400 transition-colors"
+          >
+            View all posts <ArrowRight size={14} />
+          </Link>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════
+          CTA
+      ══════════════════════════════════════ */}
+      <section className="py-32 border-t border-zinc-100 dark:border-zinc-900 relative overflow-hidden">
+        {/* Glow */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 60% 70% at 50% 50%, rgba(99,102,241,0.07) 0%, transparent 70%)",
+          }}
+        />
+        <div className="g-reveal relative z-10 container mx-auto px-6 sm:px-10 max-w-3xl text-center">
+          <p className="text-xs font-bold tracking-[0.2em] text-indigo-500 uppercase mb-5">
+            Let&apos;s Build Together
+          </p>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-zinc-900 dark:text-zinc-50 mb-6">
+            Have a project
+            <br />
+            <span className="text-indigo-500">in mind?</span>
+          </h2>
+          <p className="text-zinc-500 dark:text-zinc-400 text-lg mb-10 max-w-lg mx-auto leading-relaxed">
+            From startup MVPs to enterprise platforms — let&apos;s talk about what
+            we can build together.
+          </p>
           <Link
             href="/contact"
-            className="px-8 py-4 rounded-full bg-gradient-to-r from-blue-500 to-blue-900 text-white font-semibold text-lg shadow-lg hover:shadow-2xl hover:scale-105 transition-transform"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-base shadow-2xl shadow-indigo-600/30 hover:shadow-indigo-500/40 transition-all duration-200"
           >
-            Connect With Me
+            Start a Conversation <ArrowRight size={18} />
           </Link>
-        </motion.div>
+        </div>
+      </section>
 
-        {/* Floating Lights */}
-        <motion.div
-          animate={{ y: [0, -15, 0] }}
-          transition={{ duration: 4, repeat: Infinity }}
-          className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-2xl"
-        />
-        <motion.div
-          animate={{ y: [0, 20, 0] }}
-          transition={{ duration: 5, repeat: Infinity }}
-          className="absolute bottom-10 right-20 w-32 h-32 bg-white/10 rounded-full blur-3xl"
-        />
-      </motion.section>
+      {/* ── Footer ── */}
+      <footer className="border-t border-zinc-100 dark:border-zinc-900 py-8">
+        <div className="container mx-auto px-6 sm:px-10 max-w-5xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-zinc-400 dark:text-zinc-600">
+          <span>&copy; {new Date().getFullYear()} Adil Umer. All rights reserved.</span>
+          <span>Built with Next.js &amp; Tailwind CSS</span>
+        </div>
+      </footer>
     </div>
   );
-};
-
-export default Page;
+}
