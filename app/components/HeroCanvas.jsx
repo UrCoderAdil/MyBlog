@@ -101,15 +101,18 @@ export default function HeroCanvas() {
       };
       window.addEventListener("mousemove", onMouse, { passive: true });
 
-      /* ── Resize ── */
-      const onResize = () => {
-        const nw = canvas.clientWidth;
-        const nh = canvas.clientHeight;
+      /* ── Resize — use ResizeObserver so mobile reflows are caught ── */
+      const applySize = () => {
+        const nw = canvas.clientWidth || window.innerWidth;
+        const nh = canvas.clientHeight || window.innerHeight;
+        if (nw === 0 || nh === 0) return;
         camera.aspect = nw / nh;
         camera.updateProjectionMatrix();
         renderer.setSize(nw, nh, false);
       };
-      window.addEventListener("resize", onResize, { passive: true });
+      const ro = new ResizeObserver(applySize);
+      ro.observe(canvas.parentElement ?? canvas);
+      window.addEventListener("resize", applySize, { passive: true });
 
       /* ── Animation loop ── */
       const clock = new THREE.Clock();
@@ -131,10 +134,14 @@ export default function HeroCanvas() {
       };
       tick();
 
+      /* Force correct size after first paint */
+      requestAnimationFrame(applySize);
+
       return () => {
         cancelAnimationFrame(animId);
+        ro.disconnect();
         window.removeEventListener("mousemove", onMouse);
-        window.removeEventListener("resize", onResize);
+        window.removeEventListener("resize", applySize);
         geo.dispose();
         mat.dispose();
         renderer.dispose();

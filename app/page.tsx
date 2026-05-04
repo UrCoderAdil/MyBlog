@@ -148,7 +148,7 @@ export default function Page() {
       {/* ══════════════════════════════════════
           HERO
       ══════════════════════════════════════ */}
-      <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
+      <section className="relative min-h-screen min-h-[100svh] flex flex-col justify-center overflow-hidden">
         {/* Three.js canvas */}
         <HeroCanvas />
 
@@ -162,7 +162,7 @@ export default function Page() {
           }}
         />
 
-        <div className="relative z-[2] container mx-auto px-6 sm:px-10 pt-32 pb-28 max-w-5xl">
+        <div className="relative z-[2] container mx-auto px-6 sm:px-10 pt-24 sm:pt-32 pb-24 sm:pb-28 max-w-5xl">
           {/* Badge */}
           <span className="g-badge opacity-0 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 text-xs font-semibold tracking-wide uppercase mb-8">
             <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
@@ -175,7 +175,7 @@ export default function Page() {
               {heroLine1.map((w) => (
                 <span
                   key={w}
-                  className="g-word opacity-0 inline-block text-5xl sm:text-7xl lg:text-8xl font-extrabold tracking-tight text-zinc-300 dark:text-zinc-600"
+                  className="g-word opacity-0 inline-block text-4xl sm:text-7xl lg:text-8xl font-extrabold tracking-tight text-zinc-300 dark:text-zinc-600"
                 >
                   {w}
                 </span>
@@ -185,7 +185,7 @@ export default function Page() {
               {heroLine2.map((w) => (
                 <span
                   key={w}
-                  className="g-word opacity-0 inline-block text-5xl sm:text-7xl lg:text-8xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50"
+                  className="g-word opacity-0 inline-block text-4xl sm:text-7xl lg:text-8xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50"
                 >
                   {w}
                 </span>

@@ -112,17 +112,18 @@ export default function About() {
       className="bg-white dark:bg-[#09090b] text-zinc-900 dark:text-zinc-50"
     >
       {/* ══ Hero ══ */}
-      <section className="pt-32 pb-20 px-6 sm:px-10 border-b border-zinc-100 dark:border-zinc-900">
+      <section className="pt-24 sm:pt-32 pb-20 px-6 sm:px-10 border-b border-zinc-100 dark:border-zinc-900">
         <div className="container mx-auto max-w-5xl">
           {/* Profile image */}
           <div className="g-hero-item opacity-0 mb-10">
-            <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-zinc-200 dark:border-zinc-800 shadow-xl">
+            <div className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-zinc-200 dark:border-zinc-800 shadow-xl flex-shrink-0">
               <Image
                 src="/e1.png"
                 alt="Adil Umer"
-                width={80}
-                height={80}
-                className="object-cover w-full h-full"
+                fill
+                sizes="80px"
+                className="object-cover"
+                priority
               />
             </div>
           </div>

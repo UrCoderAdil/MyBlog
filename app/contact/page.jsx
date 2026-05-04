@@ -6,7 +6,6 @@ import {
   Mail, Github, Linkedin, Copy, CheckCheck,
   Zap, MessageSquare, Briefcase, Send, ArrowUpRight,
 } from "lucide-react";
-import emailjs from "@emailjs/browser";
 
 /* ─── Data ─────────────────────────────────── */
 const stats = [
@@ -64,22 +63,38 @@ export default function Contact() {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const sendEmail = (e) => {
+  const sendEmail = async (e) => {
     e.preventDefault();
     setSuccess(false);
     setError("");
     setSending(true);
-    emailjs
-      .sendForm(
-        process.env.NEXT_PUBLIC_SERVICE_ID,
-        process.env.NEXT_PUBLIC_TEMPLATE_ID,
-        formRef.current,
-        process.env.NEXT_PUBLIC_PUBLIC_KEY
-      )
-      .then(
-        () => { setSuccess(true); setSending(false); formRef.current.reset(); },
-        (err) => { setError(err.text || "Something went wrong. Please try again."); setSending(false); }
-      );
+
+    const formData = new FormData(formRef.current);
+    const name = formData.get("user_name")?.toString().trim() ?? "";
+    const email = formData.get("user_email")?.toString().trim() ?? "";
+    const message = formData.get("message")?.toString().trim() ?? "";
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message, inquiry_type: inquiryLabel }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Something went wrong. Please try again.");
+      } else {
+        setSuccess(true);
+        formRef.current.reset();
+        setFormFocus(null);
+      }
+    } catch {
+      setError("Network error. Please check your connection and try again.");
+    } finally {
+      setSending(false);
+    }
   };
 
   const inquiryLabel = inquiryTypes.find((t) => t.id === inquiry)?.label ?? "";
@@ -88,7 +103,7 @@ export default function Contact() {
     <div ref={pageRef} className="min-h-screen bg-white dark:bg-[#09090b] text-zinc-900 dark:text-zinc-50">
 
       {/* ══ Hero ══════════════════════════════════════════ */}
-      <div className="relative pt-32 pb-20 px-6 sm:px-10 overflow-hidden border-b border-zinc-100 dark:border-zinc-900">
+      <div className="relative pt-24 sm:pt-32 pb-20 px-6 sm:px-10 overflow-hidden border-b border-zinc-100 dark:border-zinc-900">
         {/* Background glow */}
         <div className="absolute inset-0 pointer-events-none"
           style={{ background: "radial-gradient(ellipse 70% 60% at 30% 50%, rgba(99,102,241,0.07) 0%, transparent 70%)" }}
@@ -307,7 +322,7 @@ export default function Contact() {
                   />
                 </div>
 
-                <div className="flex items-center gap-5">
+                <div className="flex flex-wrap items-center gap-4">
                   <motion.button
                     type="submit"
                     disabled={sending}
